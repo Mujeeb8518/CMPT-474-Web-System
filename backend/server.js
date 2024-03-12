@@ -1,5 +1,7 @@
 // Import required modules
 const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
 const { MongoClient } = require('mongodb');
 
 // Create an Express app
@@ -12,6 +14,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 // Middleware
 app.use(express.json());
+app.use(cors());
 
 // Routes
 app.post('/register', async (req, res) => {
@@ -39,6 +42,17 @@ app.post('/login', async (req, res) => {
   }
 });
 
+app.post('/post', async (req, res) => {
+  try {
+    const db = client.db('test'); // Replace <database-name> with your database name
+    const { text } = req.body;
+    const result = await db.collection('posts').insertOne({ text });
+    res.status(201).json({ message: 'Text posted successfully', postId: result.insertedId });
+  } catch (error) {
+    console.error('Error posting text:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 // Other routes...
 
 // Start the server
