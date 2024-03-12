@@ -1,0 +1,13 @@
+{
+    "name": "eduhub-backend",
+    "version": "1.0.0",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "dependencies": {
+        "express": "^4.18.3",
+        "mongod": "^2.0.0",
+        "mongoose": "^6.1.2"
+    }
+}
