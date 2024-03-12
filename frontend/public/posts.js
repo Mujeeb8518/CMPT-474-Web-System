@@ -3,7 +3,7 @@
 // This is a sample code to demonstrate fetching and displaying posts from the server
 window.addEventListener('DOMContentLoaded', async () => {
     try {
-        const response = await fetch('/api/posts');
+        const response = await fetch('posts');
         if (!response.ok) {
             throw new Error('Failed to fetch posts');
         }
