@@ -4,35 +4,92 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Web Application</title>
+  <style>
+    /* Style for tabs */
+    .tab {
+      display: none;
+    }
+  </style>
 </head>
 <body>
   <h1>Web Application</h1>
 
-  <!-- Registration Form -->
-  <h2>Registration</h2>
-  <form id="registrationForm">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required><br><br>
+  <!-- Tab navigation -->
+  <div id="tabNavigation">
+    <button class="tabButton" onclick="openTab(event, 'register')">Register</button>
+    <button class="tabButton" onclick="openTab(event, 'login')">Login</button>
+    <button class="tabButton" onclick="openTab(event, 'post')">Post</button>
+  </div>
 
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required><br><br>
+  <!-- Register Tab -->
+  <div id="register" class="tab">
+    <h2>Registration Form</h2>
+    <form id="registrationForm" onsubmit="submitForm(event, '/register')">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required><br><br>
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required><br><br>
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required><br><br>
 
-    <button type="submit">Register</button>
-  </form>
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required><br><br>
 
-  <!-- Script to handle form submission -->
+      <button type="submit">Register</button>
+    </form>
+  </div>
+
+  <!-- Login Tab -->
+  <div id="login" class="tab">
+    <h2>Login Form</h2>
+    <form id="loginForm" onsubmit="submitForm(event, '/login')">
+      <label for="loginEmail">Email:</label>
+      <input type="email" id="loginEmail" name="email" required><br><br>
+
+      <label for="loginPassword">Password:</label>
+      <input type="password" id="loginPassword" name="password" required><br><br>
+
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
+  <!-- Post Tab -->
+  <div id="post" class="tab">
+    <h2>Post Text</h2>
+    <form id="postForm" onsubmit="submitForm(event, '/post')">
+      <label for="postText">Text:</label>
+      <textarea id="postText" name="text" required></textarea><br><br>
+
+      <button type="submit">Post</button>
+    </form>
+  </div>
+
+  <!-- Script to handle tab navigation and form submission -->
   <script>
-    document.getElementById('registrationForm').addEventListener('submit', async function(event) {
+    // Function to switch tabs
+    function openTab(evt, tabName) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tab");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tabButton");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+
+    // Function to handle form submission
+    async function submitForm(event, endpoint) {
       event.preventDefault();
 
-      const formData = new FormData(this);
+      const form = event.target;
+      const formData = new FormData(form);
       const data = Object.fromEntries(formData.entries());
 
       try {
-        const response = await fetch('http://localhost:5000/register', {
+        const response = await fetch(`http://localhost:5000${endpoint}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -41,16 +98,19 @@
         });
 
         if (!response.ok) {
-          throw new Error('Failed to register');
+          throw new Error('Request failed');
         }
 
         const result = await response.json();
         alert(result.message);
       } catch (error) {
         console.error('Error:', error);
-        alert('Registration failed. Please try again.');
+        alert('Request failed. Please try again.');
       }
-    });
+    }
+
+    // By default, open the register tab
+    document.getElementById('register').style.display = 'block';
   </script>
 </body>
 </html>
